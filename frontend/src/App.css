@@ -27,6 +27,35 @@
 .header-content p {
   color: #6b7280;
   font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.data-source {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.data-source-label {
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.data-source-link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.data-source-link:hover {
+  color: #5568d3;
+  text-decoration: underline;
 }
 
 .app-container {

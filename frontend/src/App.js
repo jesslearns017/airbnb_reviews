@@ -461,6 +461,17 @@ function App() {
             Airbnb Sentiment Analysis
           </h1>
           <p>Analyze and visualize sentiment from Airbnb reviews</p>
+          <div className="data-source">
+            <span className="data-source-label">Data Source:</span>
+            <a 
+              href="https://www.kaggle.com/datasets/muhammadahmedansari/airbnb-dataset" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="data-source-link"
+            >
+              Kaggle - Airbnb Dataset
+            </a>
+          </div>
         </div>
       </header>
 
