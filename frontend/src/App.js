@@ -42,7 +42,8 @@ const LoadingSpinner = ({ message = 'Loading data...', icon = null, showFirstLoa
         <div className="loading-subtext" style={{ 
           marginTop: '15px', 
           fontSize: '14px', 
-          color: '#666',
+          color: '#7c3aed',
+          fontWeight: '500',
           textAlign: 'center',
           maxWidth: '400px'
         }}>
