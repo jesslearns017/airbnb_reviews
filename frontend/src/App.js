@@ -605,65 +605,6 @@ function App() {
 
   return (
     <div className="App">
-      {/* Loading Modal */}
-      {showLoadingModal && loadingProgress && (
-        <div className="loading-modal-overlay">
-          <div className="loading-modal">
-            <div className="loading-modal-header">
-              <Home size={40} className="modal-icon" />
-              <h2>Loading Additional Reviews</h2>
-            </div>
-            
-            <div className="loading-modal-body">
-              <div className="progress-info">
-                <div className="progress-text">
-                  <strong>{loadingProgress.current.toLocaleString()}</strong> of{' '}
-                  <strong>{loadingProgress.target.toLocaleString()}</strong> reviews
-                </div>
-                <div className="progress-batch">
-                  Batch {loadingProgress.currentBatch} of {loadingProgress.totalBatches}
-                </div>
-              </div>
-              
-              <div className="progress-bar-container">
-                <div 
-                  className="progress-bar-fill" 
-                  style={{ width: `${(loadingProgress.current / loadingProgress.target) * 100}%` }}
-                ></div>
-              </div>
-              
-              <div className="progress-percentage">
-                {Math.round((loadingProgress.current / loadingProgress.target) * 100)}%
-              </div>
-              
-              {loadingProgress.message && (
-                <div className="progress-message">{loadingProgress.message}</div>
-              )}
-              
-              {loadingProgress.estimatedMinutes && loadingProgress.currentBatch === 0 && (
-                <div className="estimated-time">
-                  ⏱️ Estimated time: ~{loadingProgress.estimatedMinutes} minute{loadingProgress.estimatedMinutes !== 1 ? 's' : ''}
-                </div>
-              )}
-              
-              {!cancelLoading && loadingProgress.currentBatch > 0 && (
-                <button 
-                  className="cancel-loading-btn" 
-                  onClick={handleCancelLoading}
-                >
-                  ⏸️ Stop Loading & Use Current Data
-                </button>
-              )}
-              
-              {cancelLoading && (
-                <div className="cancel-message">
-                  ⏸️ Stopping after current batch...
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
       
       <header className="app-header">
         <div className="header-content">

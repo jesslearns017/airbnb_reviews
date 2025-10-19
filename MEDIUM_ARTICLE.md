@@ -6,7 +6,12 @@ When I joined Dr. Ernesto Lee's online NLP class this semester, I expected lectu
 
 "There are no limits when you want to learn something," he told us. And he meant it.
 
-Inspired by his philosophy, I decided to take on a challenge outside of class: build and deploy a full-stack sentiment analysis application. Not for a grade. Not for an assignment. But to prove to myself that I could.
+But what really stuck with me was his warning about imposter syndrome:
+
+> "Don't let imposter syndrome creep in. Be confident. Own it. You got everything that you need to build an application, all the way through to deployment. Don't give up on this. Get over this mountain right here. Everything else will fall into place, I promise you."  
+> — Dr. Ernesto Lee
+
+Inspired by his words, I decided to take on a challenge outside of class: build and deploy a full-stack sentiment analysis application. Not for a grade. Not for an assignment. But to prove to myself that I could.
 
 This is the story of how I went from zero deployment experience to launching a live, production-ready application in a single day. No prior DevOps knowledge. No expensive courses. Just curiosity, AI assistance, and the courage to try—transported to another realm by the simple belief that I could learn anything.
 
@@ -22,7 +27,8 @@ Dr. Lee understood this shift. He didn't teach us to fear the complexity—he ta
 
 ## The Project: Airbnb Review Sentiment Analysis
 
-**Live Demo:** [https://vader-sentiment-airnbn-analysis.netlify.app/](https://vader-sentiment-airnbn-analysis.netlify.app/)  
+**Live Application:** [https://vader-sentiment-airnbn-analysis.netlify.app/](https://vader-sentiment-airnbn-analysis.netlify.app/)  
+**Backend API:** [https://airbnb-sentiment-api.onrender.com/api/health](https://airbnb-sentiment-api.onrender.com/api/health)  
 **GitHub Repository:** [https://github.com/jesslearns017/airbnb_reviews](https://github.com/jesslearns017/airbnb_reviews)
 
 ### What We Built
@@ -218,6 +224,25 @@ const LoadingSpinner = ({ message, icon, showFirstLoadMessage = false }) => {
 
 **Lesson Learned:** Can't fix infrastructure limitations? Manage expectations instead.
 
+### Challenge 4: Memory Constraints on Free Tier
+
+The backend initially tried to load 5,000 reviews, but Render's free tier couldn't handle it. The solution? Optimize for the constraints.
+
+**The Fix:** 
+- Reduced dataset to 3,000 reviews
+- Created `reviews_sample.csv` for deployment
+- Configured smart file loading (sample for production, full dataset for local)
+
+```python
+# Use sample file for deployment, full file for local development
+if os.path.exists(os.path.join(os.path.dirname(__file__), 'reviews_sample.csv')):
+    DATA_PATH = os.path.join(os.path.dirname(__file__), 'reviews_sample.csv')
+else:
+    DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'reviews.csv')
+```
+
+**Lesson Learned:** Work with your constraints, not against them. 3,000 reviews is plenty for a portfolio project.
+
 ## The Architecture: How It All Connects
 
 ```
@@ -256,7 +281,7 @@ def health():
 Instead of analyzing sentiment on every request (slow), we pre-calculate on server startup:
 
 ```python
-def load_data(sample_size=5000):
+def load_data(sample_size=3000):
     global df, df_with_sentiment
     
     df = pd.read_csv(DATA_PATH, nrows=sample_size)
@@ -406,8 +431,8 @@ That 50-second loading message? Small detail, huge impact. Always think about th
 **Time Investment:**
 - Learning VADER: 1 hour
 - Building the app: 3 hours
-- Deploying: 2 hours (including troubleshooting)
-- **Total: ~6 hours from idea to production**
+- Deploying: 3 hours (including troubleshooting, fixing dependencies, solving production issues)
+- **Total: ~7 hours from idea to production**
 
 ## Conclusion: The Future of Learning
 
@@ -418,6 +443,20 @@ This project wasn't assigned. It was self-initiated. Born from curiosity and the
 This isn't about replacing traditional computer science education. It's about **augmenting** it. Learn the fundamentals, yes. But also learn to ship. Learn to iterate. Learn to embrace the tools that make creation accessible.
 
 There are no limits when you want to learn something. The only question is: **Are you willing to start?**
+
+---
+
+## What's Next: Future Enhancements
+
+This is just the beginning. Here's what I'm planning to add:
+
+- **Semantic Search with OpenAI Embeddings** - Context-aware search beyond keywords
+- **Multi-language Support** - Analyze reviews in different languages  
+- **Trend Prediction** - ML model to forecast sentiment patterns
+- **Custom Dataset Upload** - Let users analyze their own review data
+- **Real-time Analysis** - WebSocket integration for live processing
+
+Stay tuned for Part 2 of this series! 🚀
 
 ---
 
