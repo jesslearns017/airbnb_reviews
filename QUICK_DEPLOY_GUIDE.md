@@ -85,7 +85,8 @@ You should see:
 ```json
 {
   "status": "healthy",
-  "reviews_loaded": 4991
+  "reviews_loaded": 3000,
+  "sentiment_engine": "VADER"
 }
 ```
 

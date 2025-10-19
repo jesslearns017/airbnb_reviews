@@ -171,7 +171,7 @@ The repository also includes a TextBlob implementation (`app_textblob.py`) for c
 
 The application uses **pre-calculated sentiment analysis** for instant responses:
 
-- **Startup**: Sentiment is analyzed once when the server starts (~30-40 seconds for 10k reviews)
+- **Startup**: Sentiment is analyzed once when the server starts (~10-15 seconds for 3k reviews with VADER)
 - **Runtime**: API responses are nearly instant (<100ms)
 - **Improvement**: 200x faster than real-time analysis
 
