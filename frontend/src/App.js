@@ -8,18 +8,14 @@ import {
   Smile,
   Frown,
   Meh,
-  RefreshCw,
   ChevronLeft,
   ChevronRight,
-  Home,
-  Hotel
+  Home
 } from 'lucide-react';
 import {
   PieChart,
   Pie,
   Cell,
-  BarChart,
-  Bar,
   LineChart,
   Line,
   XAxis,
@@ -74,6 +70,7 @@ function App() {
     fetchTrends();
     fetchReviews();
     fetchDatasetInfo();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   const fetchDatasetInfo = async () => {
@@ -195,6 +192,7 @@ function App() {
     if (activeTab === 'reviews') {
       fetchReviews();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, sentimentFilter, activeTab]);
 
   const fetchStatistics = async () => {
