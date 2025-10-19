@@ -30,7 +30,7 @@ import './App.css';
 const API_BASE_URL = 'https://airbnb-sentiment-api.onrender.com/api';
 
 // Loading Spinner Component
-const LoadingSpinner = ({ message = 'Loading data...', icon = null }) => {
+const LoadingSpinner = ({ message = 'Loading data...', icon = null, showFirstLoadMessage = false }) => {
   return (
     <div className="loading">
       <div className="loading-spinner-container">
@@ -38,6 +38,19 @@ const LoadingSpinner = ({ message = 'Loading data...', icon = null }) => {
         {icon && <div className="loading-icon">{icon}</div>}
       </div>
       <div className="loading-text">{message}</div>
+      {showFirstLoadMessage && (
+        <div className="loading-subtext" style={{ 
+          marginTop: '15px', 
+          fontSize: '14px', 
+          color: '#666',
+          textAlign: 'center',
+          maxWidth: '400px'
+        }}>
+          ⏱️ First load may take up to 60 seconds as the server wakes up from sleep mode.
+          <br />
+          Subsequent loads will be much faster!
+        </div>
+      )}
       <div className="loading-dots">
         <div className="loading-dot"></div>
         <div className="loading-dot"></div>
@@ -816,7 +829,11 @@ function App() {
 
         <main className="app-main">
           {loading && activeTab === 'dashboard' ? (
-            <LoadingSpinner message="Loading dashboard..." icon={<Home size={32} />} />
+            <LoadingSpinner 
+              message="Loading dashboard..." 
+              icon={<Home size={32} />} 
+              showFirstLoadMessage={true}
+            />
           ) : (
             <>
               {activeTab === 'dashboard' && renderDashboard()}
