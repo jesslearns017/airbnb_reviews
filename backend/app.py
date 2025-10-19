@@ -13,7 +13,11 @@ CORS(app)
 vader_analyzer = SentimentIntensityAnalyzer()
 
 # Load data
-DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'reviews.csv')
+# Use sample file for deployment, full file for local development
+if os.path.exists(os.path.join(os.path.dirname(__file__), 'reviews_sample.csv')):
+    DATA_PATH = os.path.join(os.path.dirname(__file__), 'reviews_sample.csv')
+else:
+    DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'reviews.csv')
 df = None
 df_with_sentiment = None
 

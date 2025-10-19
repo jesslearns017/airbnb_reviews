@@ -40,6 +40,8 @@ Thumbs.db
 # Data files (large CSV file from Kaggle - not tracked)
 reviews.csv
 *.csv
+# But allow the small sample for deployment
+!reviews_sample.csv
 
 # Logs
 *.log
