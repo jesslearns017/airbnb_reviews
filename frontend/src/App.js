@@ -289,7 +289,7 @@ function App() {
   };
 
   const renderDashboard = () => {
-    if (!statistics || !trends) return <LoadingSpinner message="Analyzing sentiment data..." icon={<Home size={32} />} />;
+    if (!statistics || !trends) return <LoadingSpinner message="Analyzing sentiment data..." icon={<Home size={32} />} showFirstLoadMessage={true} />;
 
     const pieData = [
       { name: 'Positive', value: statistics.sentiment_distribution.positive, color: '#10b981' },
