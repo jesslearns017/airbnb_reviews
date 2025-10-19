@@ -1,0 +1,13 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="100" fill="#5B8DB8"/>
+  <!-- House icon with upward trend - centered -->
+  <g transform="translate(100, 70)">
+    <path d="M-20 5 L0 -10 L20 5 L20 25 L-20 25 Z" stroke="white" stroke-width="3" fill="none"/>
+    <rect x="-4" y="10" width="8" height="15" fill="white"/>
+    <rect x="-12" y="0" width="6" height="8" fill="white"/>
+    <!-- Upward arrow/trend -->
+    <path d="M-15 15 Q-5 5 5 10 Q15 15 23 0" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M23 0 L18 2 L21 7 Z" fill="white"/>
+  </g>
+  <text x="100" y="145" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="white" text-anchor="middle">airbnb</text>
+</svg>
