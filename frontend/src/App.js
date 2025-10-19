@@ -299,22 +299,15 @@ function App() {
 
     return (
       <div className="dashboard">
-        {datasetInfo && datasetInfo.can_load_more && (
-          <div className="dataset-info-banner">
-            <div className="dataset-info-content">
-              <span className="dataset-info-text">
-                📊 Currently showing {datasetInfo.loaded.toLocaleString()} of {datasetInfo.total_available.toLocaleString()} reviews
-                <span className="dataset-info-subtext">
-                  ({(datasetInfo.total_available - datasetInfo.loaded).toLocaleString()} more available)
-                </span>
+        {datasetInfo && (
+          <div className="dataset-info-banner" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', border: 'none' }}>
+            <div className="dataset-info-content" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '8px' }}>
+              <span className="dataset-info-text" style={{ fontSize: '15px', fontWeight: '600' }}>
+                📊 Currently displaying {datasetInfo.loaded.toLocaleString()} reviews (first {datasetInfo.loaded.toLocaleString()} from dataset after removing duplicates)
               </span>
-              <button 
-                className="load-more-btn" 
-                onClick={handleLoadMoreData}
-                disabled={loadingMore}
-              >
-                {loadingMore ? 'Loading...' : 'Load More Reviews'}
-              </button>
+              <span className="dataset-info-subtext" style={{ fontSize: '13px', opacity: '0.9', lineHeight: '1.5' }}>
+                ℹ️ Free tier hosting limits prevent loading additional data. Full dataset ({datasetInfo.total_available.toLocaleString()}+ reviews) available when running locally.
+              </span>
             </div>
           </div>
         )}
