@@ -1,11 +1,18 @@
 # Airbnb Reviews Sentiment Analysis 🏠📊
 
-A full-stack web application for analyzing sentiment in Airbnb reviews using Natural Language Processing (NLP).
+A full-stack web application for analyzing sentiment in Airbnb reviews using Natural Language Processing (NLP) with VADER sentiment analysis.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)
 ![React](https://img.shields.io/badge/React-18.2.0-61dafb.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+## 🌐 Live Demo
+
+**Frontend:** [https://vader-sentiment-airnbn-analysis.netlify.app/](https://vader-sentiment-airnbn-analysis.netlify.app/)  
+**Backend API:** [https://airbnb-sentiment-api.onrender.com](https://airbnb-sentiment-api.onrender.com)
+
+> ⏱️ **Note:** First load may take 50-60 seconds as the free-tier server wakes up. Subsequent loads are fast!
 
 ## 📸 Screenshots
 
@@ -18,13 +25,14 @@ Browse, search, and filter reviews with real-time sentiment analysis.
 ### Custom Analyzer
 Test sentiment analysis on any custom text instantly.
 
-## Features
+## ✨ Features
 
 - **Dashboard**: Visual overview with statistics, charts, and sentiment distribution
 - **Reviews Browser**: Browse, search, and filter reviews by sentiment
-- **Custom Analyzer**: Analyze sentiment of any custom text
-- **Real-time Analysis**: Uses TextBlob for sentiment analysis
-- **Beautiful UI**: Modern, responsive design with smooth animations
+- **Custom Analyzer**: Analyze sentiment of any custom text instantly
+- **VADER Sentiment Analysis**: Advanced NLP with better negation handling and emoji support
+- **Beautiful UI**: Modern, responsive design with Airbnb coral branding
+- **Fully Deployed**: Live on Netlify (frontend) and Render (backend)
 
 ## Tech Stack
 
@@ -32,8 +40,9 @@ Test sentiment analysis on any custom text instantly.
 - **Python 3.x**
 - **Flask**: Web framework
 - **Pandas**: Data processing
-- **TextBlob**: Sentiment analysis
+- **VADER Sentiment**: Advanced sentiment analysis with negation handling
 - **Flask-CORS**: Cross-origin resource sharing
+- **Gunicorn**: Production WSGI server
 
 ### Frontend
 - **React 18**: UI framework
@@ -133,16 +142,28 @@ https://www.kaggle.com/datasets/muhammadahmedansari/airbnb-dataset
 - **reviewer_name**: Name of the reviewer
 - **comments**: Review text content
 
-## Sentiment Analysis
+## 🎯 Sentiment Analysis
 
-The application uses TextBlob's sentiment analysis which provides:
-- **Polarity**: Range from -1 (negative) to 1 (positive)
-- **Subjectivity**: Range from 0 (objective) to 1 (subjective)
+The application uses **VADER (Valence Aware Dictionary and sEntiment Reasoner)** for sentiment analysis, which provides:
 
-Reviews are classified as:
-- **Positive**: Polarity > 0.1
-- **Negative**: Polarity < -0.1
-- **Neutral**: Polarity between -0.1 and 0.1
+### VADER Advantages
+- ✅ **Better negation handling**: Correctly interprets "not good" as negative
+- ✅ **Intensifier recognition**: Understands "very good" vs "good"
+- ✅ **Emoji support**: Recognizes sentiment in emojis 😊 😢
+- ✅ **Punctuation awareness**: "Great!!!" vs "Great"
+- ✅ **Social media optimized**: Designed for reviews and informal text
+
+### Sentiment Scores
+- **Compound**: Overall sentiment score from -1 (most negative) to +1 (most positive)
+- **Positive/Negative/Neutral**: Individual component scores
+
+### Classification Thresholds
+- **Positive**: Compound score ≥ 0.05
+- **Negative**: Compound score ≤ -0.05
+- **Neutral**: Compound score between -0.05 and 0.05
+
+### Alternative Implementation
+The repository also includes a TextBlob implementation (`app_textblob.py`) for comparison purposes.
 
 ## ⚡ Performance
 
@@ -194,6 +215,29 @@ See [DOMAIN_SPECIFIC_UPGRADE.md](DOMAIN_SPECIFIC_UPGRADE.md) for:
 - GPT-4 integration
 - Cost analysis and migration strategy
 
+## 🚀 Deployment
+
+This application is deployed using:
+- **Frontend**: Netlify (https://vader-sentiment-airnbn-analysis.netlify.app/)
+- **Backend**: Render (https://airbnb-sentiment-api.onrender.com)
+
+### Deploy Your Own
+
+See [QUICK_DEPLOY_GUIDE.md](QUICK_DEPLOY_GUIDE.md) for step-by-step deployment instructions.
+
+**Quick Summary:**
+1. **Backend (Render)**:
+   - Connect GitHub repo
+   - Set root directory to `backend`
+   - Build command: `pip install -r requirements.txt`
+   - Start command: `gunicorn app:app`
+
+2. **Frontend (Netlify)**:
+   - Connect GitHub repo
+   - Set base directory to `frontend`
+   - Build command: `npm run build`
+   - Publish directory: `frontend/build`
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
@@ -205,9 +249,10 @@ MIT License - see the [LICENSE](LICENSE) file for details.
 ## 🙏 Acknowledgments
 
 - Dataset from [Kaggle - Airbnb Dataset](https://www.kaggle.com/datasets/muhammadahmedansari/airbnb-dataset)
-- Sentiment analysis powered by [TextBlob](https://textblob.readthedocs.io/)
+- Sentiment analysis powered by [VADER Sentiment](https://github.com/cjhutto/vaderSentiment)
 - Charts created with [Recharts](https://recharts.org/)
 - Icons from [Lucide](https://lucide.dev/)
+- Deployed on [Netlify](https://www.netlify.com/) and [Render](https://render.com/)
 
 ## 📧 Contact
 
