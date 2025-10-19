@@ -17,8 +17,8 @@ DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'reviews.csv')
 df = None
 df_with_sentiment = None
 
-def load_data(sample_size=10000):
-    """Load a sample of the reviews data and pre-calculate sentiment"""
+def load_data(sample_size=3000):
+    """Load a sample of the reviews data and pre-calculate sentiment with VADER"""
     global df, df_with_sentiment
     print("Loading data...")
     df = pd.read_csv(DATA_PATH, nrows=sample_size)
@@ -148,7 +148,7 @@ def dataset_info():
 def reload_data():
     """Reload data with a different sample size"""
     data = request.json
-    sample_size = data.get('sample_size', 10000)
+    sample_size = data.get('sample_size', 3000)
     batch_size = data.get('batch_size', None)
     
     try:
@@ -173,7 +173,7 @@ def reload_data():
 def estimate_load_time():
     """Estimate loading time for a given number of reviews"""
     data = request.json
-    sample_size = data.get('sample_size', 10000)
+    sample_size = data.get('sample_size', 3000)
     
     # VADER is slightly faster than TextBlob: ~0.003 seconds per review
     estimated_seconds = sample_size * 0.003

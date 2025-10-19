@@ -177,15 +177,16 @@ The application uses **pre-calculated sentiment analysis** for instant responses
 
 ### Configuration
 
-By default, the backend loads 10,000 reviews. You can adjust this in `backend/app.py`:
+By default, the backend loads 3,000 reviews (optimized for free-tier deployment). You can adjust this in `backend/app.py`:
 
 ```python
-load_data(sample_size=10000)  # Change this number
+load_data(sample_size=3000)  # Change this number
 ```
 
 **Recommendations:**
-- **Development**: 1,000-5,000 reviews (faster startup)
-- **Production**: 10,000-50,000 reviews (more data)
+- **Development**: 1,000-3,000 reviews (faster startup)
+- **Production (Free Tier)**: 3,000-5,000 reviews (memory constraints)
+- **Production (Paid Tier)**: 10,000-50,000 reviews (more data)
 
 See [PERFORMANCE_OPTIMIZATION.md](PERFORMANCE_OPTIMIZATION.md) for detailed performance metrics and optimization strategies.
 
