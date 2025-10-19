@@ -31,7 +31,7 @@ import {
 } from 'recharts';
 import './App.css';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://airbnb-sentiment-api.onrender.com/api';
 
 // Loading Spinner Component
 const LoadingSpinner = ({ message = 'Loading data...', icon = null }) => {
