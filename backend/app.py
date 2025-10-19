@@ -370,6 +370,8 @@ def get_vader_details():
     
     return jsonify(details)
 
+# Load data on startup (works with both Flask dev server and Gunicorn)
+load_data(sample_size=3000)  # Reduced for free tier memory limits
+
 if __name__ == '__main__':
-    load_data(sample_size=5000)  # Load 5k reviews for faster startup
     app.run(debug=True, port=5000)
