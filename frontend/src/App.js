@@ -456,13 +456,13 @@ function App() {
             <div className="methodology-card">
               <h3>🔬 Sentiment Analysis Model</h3>
               <p>
-                This analysis uses <strong>TextBlob</strong>, a Python library for Natural Language Processing (NLP) 
-                that employs a <strong>pre-trained Naive Bayes classifier</strong> combined with pattern-based rules.
+                This analysis uses <strong>VADER</strong> (Valence Aware Dictionary and sEntiment Reasoner), 
+                a lexicon and rule-based sentiment analysis tool specifically attuned to sentiments expressed in social media and reviews.
               </p>
               <ul>
-                <li><strong>Polarity Score:</strong> Ranges from -1 (most negative) to +1 (most positive)</li>
-                <li><strong>Classification:</strong> Positive (&gt;0.1), Neutral (-0.1 to 0.1), Negative (&lt;-0.1)</li>
-                <li><strong>Subjectivity:</strong> Measures opinion vs. factual content (0 to 1)</li>
+                <li><strong>Compound Score:</strong> Ranges from -1 (most negative) to +1 (most positive)</li>
+                <li><strong>Classification:</strong> Positive (≥0.05), Neutral (-0.05 to 0.05), Negative (≤-0.05)</li>
+                <li><strong>Strengths:</strong> Handles negations, intensifiers, emojis, and punctuation</li>
               </ul>
             </div>
 
@@ -522,8 +522,8 @@ function App() {
               💡 Upgrading for Production Use
             </h3>
             <p style={{ marginBottom: '1rem' }}>
-              <strong>Current Approach:</strong> This analysis uses TextBlob, a rule-based NLP library. 
-              Excellent for exploratory analysis and learning, but has limitations with domain-specific language.
+              <strong>Current Approach:</strong> This analysis uses VADER, a lexicon and rule-based NLP tool. 
+              Excellent for social media and reviews, with strong performance on negations and informal language.
             </p>
             <p style={{ marginBottom: '1rem' }}>
               <strong>For Production Applications:</strong> Consider domain-specific sentiment models trained 
@@ -660,7 +660,7 @@ function App() {
               ⚠️ <strong>Known Limitations</strong>
             </div>
             <p className="warning-text">
-              TextBlob may struggle with negations and complex phrases. For example:
+              While VADER handles most cases well, domain-specific models may provide even higher accuracy. For example:
             </p>
             <div className="warning-examples">
               <div className="example-item">

@@ -79,10 +79,7 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-5. Download TextBlob corpora:
-```bash
-python -m textblob.download_corpora
-```
+5. Download VADER lexicon (automatically installed with vaderSentiment package)
 
 6. Start the backend server:
 ```bash
@@ -192,13 +189,13 @@ See [PERFORMANCE_OPTIMIZATION.md](PERFORMANCE_OPTIMIZATION.md) for detailed perf
 
 ## 🎓 Upgrading to Domain-Specific Models
 
-Want higher accuracy? The current implementation uses TextBlob (~70-80% accuracy), which is great for exploratory analysis. For production applications, consider upgrading to domain-specific sentiment models trained on Airbnb/hotel reviews.
+Want even higher accuracy? The current implementation uses VADER (~80-85% accuracy), which is excellent for social media and reviews. For production applications requiring maximum accuracy, consider upgrading to domain-specific sentiment models trained on Airbnb/hotel reviews.
 
 **Why upgrade?**
-- 📈 **85-95% accuracy** (vs 70-80% with TextBlob)
+- 📈 **85-95% accuracy** (vs 80-85% with VADER)
 - 🎯 **Understands Airbnb context** (e.g., "responsive host", "accurate listing")
 - 💡 **Better handles domain-specific phrases**
-- ✅ **Fixes negation issues** (e.g., "did not like" correctly classified as negative)
+- 🔍 **Fine-tuned for hospitality language**
 
 ### Quick Start: Upgrade to BERT (15 minutes, FREE)
 
