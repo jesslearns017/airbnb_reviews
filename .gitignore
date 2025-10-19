@@ -46,3 +46,7 @@ reviews.csv
 
 # Environment variables
 .env
+
+# Backup files
+*_backup.py
+*.bak

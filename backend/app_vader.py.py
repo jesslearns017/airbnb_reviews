@@ -1,16 +1,13 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import pandas as pd
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from textblob import TextBlob
 import numpy as np
 from datetime import datetime
 import os
 
 app = Flask(__name__)
 CORS(app)
-
-# Initialize VADER sentiment analyzer
-vader_analyzer = SentimentIntensityAnalyzer()
 
 # Load data
 DATA_PATH = os.path.join(os.path.dirname(__file__), '..', 'reviews.csv')
@@ -34,11 +31,11 @@ def load_data(sample_size=10000):
     
     print(f"Loaded {len(df)} unique reviews")
     
-    # Pre-calculate sentiment for all reviews using VADER
-    print("Pre-calculating sentiment analysis with VADER...")
+    # Pre-calculate sentiment for all reviews
+    print("Pre-calculating sentiment analysis...")
     sentiments = []
     for idx, row in df.iterrows():
-        sentiment_data = analyze_sentiment_vader(row['comments'])
+        sentiment_data = analyze_sentiment(row['comments'])
         sentiments.append(sentiment_data)
         if (idx + 1) % 1000 == 0:
             print(f"Processed {idx + 1}/{len(df)} reviews...")
@@ -47,80 +44,40 @@ def load_data(sample_size=10000):
     df_with_sentiment['polarity'] = [s['polarity'] for s in sentiments]
     df_with_sentiment['subjectivity'] = [s['subjectivity'] for s in sentiments]
     df_with_sentiment['sentiment'] = [s['sentiment'] for s in sentiments]
-    df_with_sentiment['compound'] = [s['compound'] for s in sentiments]
-    df_with_sentiment['positive'] = [s['positive'] for s in sentiments]
-    df_with_sentiment['negative'] = [s['negative'] for s in sentiments]
-    df_with_sentiment['neutral_score'] = [s['neutral_score'] for s in sentiments]
     
-    print("VADER sentiment analysis complete!")
+    print("Sentiment analysis complete!")
     return df
 
-def analyze_sentiment_vader(text):
-    """Analyze sentiment of text using VADER"""
+def analyze_sentiment(text):
+    """Analyze sentiment of text using TextBlob"""
     if pd.isna(text) or text == '':
-        return {
-            'polarity': 0, 
-            'subjectivity': 0.5, 
-            'sentiment': 'neutral',
-            'compound': 0,
-            'positive': 0,
-            'negative': 0,
-            'neutral_score': 1.0
-        }
+        return {'polarity': 0, 'subjectivity': 0, 'sentiment': 'neutral'}
     
     try:
-        # Get VADER scores
-        scores = vader_analyzer.polarity_scores(str(text))
+        blob = TextBlob(str(text))
+        polarity = blob.sentiment.polarity
+        subjectivity = blob.sentiment.subjectivity
         
-        # VADER returns: neg, neu, pos, compound
-        # compound: normalized, weighted composite score (-1 to 1)
-        compound = scores['compound']
-        
-        # Classify sentiment based on compound score
-        # VADER recommended thresholds
-        if compound >= 0.05:
+        # Classify sentiment
+        if polarity > 0.1:
             sentiment = 'positive'
-        elif compound <= -0.05:
+        elif polarity < -0.1:
             sentiment = 'negative'
         else:
             sentiment = 'neutral'
         
-        # Map compound to polarity for compatibility with frontend
-        polarity = compound  # Already in -1 to 1 range
-        
-        # Estimate subjectivity (VADER doesn't provide this directly)
-        # Higher pos/neg scores relative to neutral suggest more subjectivity
-        subjectivity = 1.0 - scores['neu']
-        
         return {
             'polarity': round(polarity, 3),
             'subjectivity': round(subjectivity, 3),
-            'sentiment': sentiment,
-            'compound': round(compound, 3),
-            'positive': round(scores['pos'], 3),
-            'negative': round(scores['neg'], 3),
-            'neutral_score': round(scores['neu'], 3)
+            'sentiment': sentiment
         }
-    except Exception as e:
-        print(f"Error analyzing sentiment: {e}")
-        return {
-            'polarity': 0, 
-            'subjectivity': 0.5, 
-            'sentiment': 'neutral',
-            'compound': 0,
-            'positive': 0,
-            'negative': 0,
-            'neutral_score': 1.0
-        }
+    except:
+        return {'polarity': 0, 'subjectivity': 0, 'sentiment': 'neutral'}
 
 @app.route('/api/health', methods=['GET'])
 def health():
     """Health check endpoint"""
-    return jsonify({
-        'status': 'healthy', 
-        'reviews_loaded': len(df) if df is not None else 0,
-        'sentiment_engine': 'VADER'
-    })
+    return jsonify({'status': 'healthy', 'reviews_loaded': len(df) if df is not None else 0})
 
 @app.route('/api/dataset-info', methods=['GET'])
 def dataset_info():
@@ -140,8 +97,7 @@ def dataset_info():
     return jsonify({
         'loaded': len(df_with_sentiment),
         'total_available': total_in_file,
-        'can_load_more': len(df_with_sentiment) < total_in_file,
-        'sentiment_engine': 'VADER'
+        'can_load_more': len(df_with_sentiment) < total_in_file
     })
 
 @app.route('/api/reload-data', methods=['POST'])
@@ -164,7 +120,7 @@ def reload_data():
         return jsonify({
             'success': True,
             'loaded': len(df_with_sentiment),
-            'message': f'Successfully loaded {len(df_with_sentiment)} reviews with VADER'
+            'message': f'Successfully loaded {len(df_with_sentiment)} reviews'
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -175,8 +131,8 @@ def estimate_load_time():
     data = request.json
     sample_size = data.get('sample_size', 10000)
     
-    # VADER is slightly faster than TextBlob: ~0.003 seconds per review
-    estimated_seconds = sample_size * 0.003
+    # Rough estimate: ~0.004 seconds per review (based on TextBlob processing)
+    estimated_seconds = sample_size * 0.004
     
     return jsonify({
         'sample_size': sample_size,
@@ -193,7 +149,7 @@ def analyze():
     if not text:
         return jsonify({'error': 'No text provided'}), 400
     
-    result = analyze_sentiment_vader(text)
+    result = analyze_sentiment(text)
     return jsonify(result)
 
 @app.route('/api/reviews', methods=['GET'])
@@ -236,11 +192,7 @@ def get_reviews():
             'comments': row['comments'],
             'polarity': float(row['polarity']),
             'subjectivity': float(row['subjectivity']),
-            'sentiment': row['sentiment'],
-            'compound': float(row['compound']),
-            'positive': float(row['positive']),
-            'negative': float(row['negative']),
-            'neutral_score': float(row['neutral_score'])
+            'sentiment': row['sentiment']
         })
     
     return jsonify({
@@ -268,13 +220,8 @@ def get_statistics():
         'average_polarity': float(df_with_sentiment['polarity'].mean()),
         'average_subjectivity': float(df_with_sentiment['subjectivity'].mean()),
         'polarity_std': float(df_with_sentiment['polarity'].std()),
-        'average_compound': float(df_with_sentiment['compound'].mean()),
-        'average_positive': float(df_with_sentiment['positive'].mean()),
-        'average_negative': float(df_with_sentiment['negative'].mean()),
-        'average_neutral': float(df_with_sentiment['neutral_score'].mean()),
         'most_positive_review': None,
-        'most_negative_review': None,
-        'sentiment_engine': 'VADER'
+        'most_negative_review': None
     }
     
     # Find most positive and negative reviews
@@ -285,7 +232,6 @@ def get_statistics():
         stats['most_positive_review'] = {
             'comments': df_with_sentiment.iloc[max_polarity_idx]['comments'][:200] + '...',
             'polarity': float(df_with_sentiment.iloc[max_polarity_idx]['polarity']),
-            'compound': float(df_with_sentiment.iloc[max_polarity_idx]['compound']),
             'reviewer_name': df_with_sentiment.iloc[max_polarity_idx]['reviewer_name']
         }
     
@@ -293,7 +239,6 @@ def get_statistics():
         stats['most_negative_review'] = {
             'comments': df_with_sentiment.iloc[min_polarity_idx]['comments'][:200] + '...',
             'polarity': float(df_with_sentiment.iloc[min_polarity_idx]['polarity']),
-            'compound': float(df_with_sentiment.iloc[min_polarity_idx]['compound']),
             'reviewer_name': df_with_sentiment.iloc[min_polarity_idx]['reviewer_name']
         }
     
@@ -312,7 +257,6 @@ def get_trends():
     trends_df['month'] = trends_df['date'].dt.to_period('M')
     monthly_stats = trends_df.groupby('month').agg({
         'polarity': 'mean',
-        'compound': 'mean',
         'id': 'count'
     }).reset_index()
     
@@ -324,51 +268,11 @@ def get_trends():
     
     trends = {
         'monthly_polarity': monthly_stats[['month', 'polarity']].to_dict('records'),
-        'monthly_compound': monthly_stats[['month', 'compound']].to_dict('records'),
         'monthly_count': monthly_stats[['month', 'id']].rename(columns={'id': 'count'}).to_dict('records'),
         'sentiment_by_month': sentiment_by_month.reset_index().to_dict('records')
     }
     
     return jsonify(trends)
-
-@app.route('/api/vader-details', methods=['GET'])
-def get_vader_details():
-    """Get detailed VADER sentiment breakdown"""
-    if df_with_sentiment is None:
-        return jsonify({'error': 'Data not loaded'}), 500
-    
-    details = {
-        'average_scores': {
-            'compound': float(df_with_sentiment['compound'].mean()),
-            'positive': float(df_with_sentiment['positive'].mean()),
-            'negative': float(df_with_sentiment['negative'].mean()),
-            'neutral': float(df_with_sentiment['neutral_score'].mean())
-        },
-        'score_distributions': {
-            'compound_std': float(df_with_sentiment['compound'].std()),
-            'positive_std': float(df_with_sentiment['positive'].std()),
-            'negative_std': float(df_with_sentiment['negative'].std()),
-            'neutral_std': float(df_with_sentiment['neutral_score'].std())
-        },
-        'sentiment_engine': 'VADER',
-        'vader_info': {
-            'description': 'VADER (Valence Aware Dictionary and sEntiment Reasoner)',
-            'strengths': [
-                'Handles negations well (e.g., "not good")',
-                'Understands intensifiers (e.g., "very good")',
-                'Recognizes emojis and punctuation',
-                'Optimized for social media and reviews'
-            ],
-            'compound_range': '[-1, 1] where -1 is most negative and 1 is most positive',
-            'thresholds': {
-                'positive': '>= 0.05',
-                'neutral': '> -0.05 and < 0.05',
-                'negative': '<= -0.05'
-            }
-        }
-    }
-    
-    return jsonify(details)
 
 if __name__ == '__main__':
     load_data(sample_size=5000)  # Load 5k reviews for faster startup
