@@ -74,10 +74,6 @@ function App() {
   const [analyzeText, setAnalyzeText] = useState('');
   const [analyzeResult, setAnalyzeResult] = useState(null);
   const [datasetInfo, setDatasetInfo] = useState(null);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(null);
-  const [showLoadingModal, setShowLoadingModal] = useState(false);
-  const [cancelLoading, setCancelLoading] = useState(false);
 
   useEffect(() => {
     fetchStatistics();
@@ -96,111 +92,6 @@ function App() {
     }
   };
   
-  const handleCancelLoading = () => {
-    setCancelLoading(true);
-  };
-  
-  const handleLoadMoreData = async () => {
-    if (!datasetInfo || !datasetInfo.can_load_more) return;
-    
-    const remainingReviews = datasetInfo.total_available - datasetInfo.loaded;
-    const batchSize = 2500; // Load 2500 reviews per batch
-    const maxBatches = Math.ceil(remainingReviews / batchSize);
-    
-    // Ask user how many batches to load
-    const userChoice = prompt(
-      `You have ${remainingReviews.toLocaleString()} reviews remaining.\n\n` +
-      `Full dataset: ${maxBatches} batches (~${Math.round(remainingReviews * 0.004 / 60)} minutes)\n` +
-      `Recommended: 4 batches (10,000 reviews, ~40 seconds)\n` +
-      `Quick: 2 batches (5,000 reviews, ~20 seconds)\n\n` +
-      `How many batches would you like to load? (1-${maxBatches})`,
-      '4'
-    );
-    
-    if (!userChoice) return; // User cancelled
-    
-    const numBatches = parseInt(userChoice);
-    if (isNaN(numBatches) || numBatches < 1 || numBatches > maxBatches) {
-      alert(`Please enter a number between 1 and ${maxBatches}`);
-      return;
-    }
-    
-    const reviewsToLoad = Math.min(numBatches * batchSize, remainingReviews);
-    
-    // Get time estimate
-    try {
-      const estimateResponse = await axios.post(`${API_BASE_URL}/estimate-load-time`, {
-        sample_size: reviewsToLoad
-      });
-      
-      const estimatedTime = estimateResponse.data.estimated_minutes;
-      
-      setLoadingProgress({
-        current: datasetInfo.loaded,
-        target: datasetInfo.loaded + reviewsToLoad,
-        currentBatch: 0,
-        totalBatches: numBatches,
-        estimatedMinutes: estimatedTime
-      });
-      setShowLoadingModal(true);
-      setLoadingMore(true);
-      setCancelLoading(false);
-      
-      // Load in batches
-      let currentLoaded = datasetInfo.loaded;
-      for (let i = 0; i < numBatches; i++) {
-        // Check if user cancelled
-        if (cancelLoading) {
-          setLoadingProgress(prev => ({
-            ...prev,
-            message: 'Loading cancelled by user. Refreshing with current data...'
-          }));
-          break;
-        }
-        
-        const targetSize = Math.min(currentLoaded + batchSize, datasetInfo.total_available);
-        
-        setLoadingProgress(prev => ({
-          ...prev,
-          currentBatch: i + 1,
-          current: targetSize,
-          message: `Loading batch ${i + 1} of ${numBatches}...`
-        }));
-        
-        const response = await axios.post(`${API_BASE_URL}/reload-data`, {
-          sample_size: targetSize
-        });
-        
-        if (response.data.success) {
-          currentLoaded = response.data.loaded;
-        }
-      }
-      
-      // Refresh all data
-      await fetchStatistics();
-      await fetchTrends();
-      await fetchReviews();
-      await fetchDatasetInfo();
-      
-      setLoadingProgress(prev => ({
-        ...prev,
-        message: 'Complete! Refreshing dashboard...'
-      }));
-      
-      setTimeout(() => {
-        setShowLoadingModal(false);
-        setLoadingMore(false);
-        setLoadingProgress(null);
-      }, 1000);
-      
-    } catch (error) {
-      console.error('Error loading more data:', error);
-      setShowLoadingModal(false);
-      setLoadingMore(false);
-      setLoadingProgress(null);
-      alert('Failed to load more data. Please try again.');
-    }
-  };
 
   useEffect(() => {
     if (activeTab === 'reviews') {
