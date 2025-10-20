@@ -43,6 +43,9 @@ reviews.csv
 # But allow the small sample for deployment
 !reviews_sample.csv
 
+# Embeddings cache (generated locally, too large for git)
+embeddings_cache.pkl
+
 # Logs
 *.log
 

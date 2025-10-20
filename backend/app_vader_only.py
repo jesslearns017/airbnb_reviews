@@ -5,7 +5,6 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import numpy as np
 from datetime import datetime
 import os
-from semantic_search import semantic_search_engine
 
 app = Flask(__name__)
 CORS(app)
@@ -58,12 +57,6 @@ def load_data(sample_size=3000):
     df_with_sentiment['neutral_score'] = [s['neutral_score'] for s in sentiments]
     
     print("VADER sentiment analysis complete!")
-    
-    # Initialize semantic search with the loaded data
-    print("Initializing semantic search...")
-    semantic_search_engine.create_embeddings(df_with_sentiment)
-    print("Semantic search ready!")
-    
     return df
 
 def analyze_sentiment_vader(text):
@@ -130,8 +123,7 @@ def health():
     return jsonify({
         'status': 'healthy', 
         'reviews_loaded': len(df) if df is not None else 0,
-        'sentiment_engine': 'VADER',
-        'semantic_search': 'enabled'
+        'sentiment_engine': 'VADER'
     })
 
 @app.route('/api/dataset-info', methods=['GET'])
@@ -153,8 +145,7 @@ def dataset_info():
         'loaded': len(df_with_sentiment),
         'total_available': total_in_file,
         'can_load_more': len(df_with_sentiment) < total_in_file,
-        'sentiment_engine': 'VADER',
-        'semantic_search': 'enabled'
+        'sentiment_engine': 'VADER'
     })
 
 @app.route('/api/reload-data', methods=['POST'])
@@ -177,7 +168,7 @@ def reload_data():
         return jsonify({
             'success': True,
             'loaded': len(df_with_sentiment),
-            'message': f'Successfully loaded {len(df_with_sentiment)} reviews with VADER and semantic search'
+            'message': f'Successfully loaded {len(df_with_sentiment)} reviews with VADER'
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -208,70 +199,6 @@ def analyze():
     
     result = analyze_sentiment_vader(text)
     return jsonify(result)
-
-# NEW: Semantic Search Endpoint
-@app.route('/api/semantic-search', methods=['POST'])
-def semantic_search():
-    """Search reviews using AI-powered semantic search"""
-    data = request.json
-    query = data.get('query', '')
-    top_k = data.get('top_k', 20)
-    
-    if not query:
-        return jsonify({'error': 'No query provided'}), 400
-    
-    try:
-        results = semantic_search_engine.search(query, top_k=top_k)
-        return jsonify({
-            'query': query,
-            'results': results,
-            'total': len(results),
-            'search_type': 'semantic'
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-# NEW: Keyword Search Endpoint (for comparison)
-@app.route('/api/keyword-search', methods=['POST'])
-def keyword_search():
-    """Search reviews using traditional keyword matching"""
-    if df_with_sentiment is None:
-        return jsonify({'error': 'Data not loaded'}), 500
-    
-    data = request.json
-    query = data.get('query', '')
-    top_k = data.get('top_k', 20)
-    
-    if not query:
-        return jsonify({'error': 'No query provided'}), 400
-    
-    try:
-        # Simple keyword search (case-insensitive)
-        filtered_df = df_with_sentiment[
-            df_with_sentiment['comments'].str.contains(query, case=False, na=False)
-        ]
-        
-        # Limit to top_k results
-        filtered_df = filtered_df.head(top_k)
-        
-        results = []
-        for idx, row in filtered_df.iterrows():
-            results.append({
-                'id': int(row['id']),
-                'listing_id': int(row['listing_id']),
-                'date': str(row['date']),
-                'reviewer_name': str(row['reviewer_name']),
-                'comments': str(row['comments'])
-            })
-        
-        return jsonify({
-            'query': query,
-            'results': results,
-            'total': len(results),
-            'search_type': 'keyword'
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/reviews', methods=['GET'])
 def get_reviews():

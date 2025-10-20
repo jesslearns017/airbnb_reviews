@@ -10,7 +10,8 @@ import {
   Meh,
   ChevronLeft,
   ChevronRight,
-  Home
+  Home,
+  Sparkles
 } from 'lucide-react';
 import {
   PieChart,
@@ -25,6 +26,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
+import SemanticSearch from './SemanticSearch';
 import './App.css';
 
 const API_BASE_URL = 'https://airbnb-sentiment-api.onrender.com/api';
@@ -651,6 +653,13 @@ function App() {
             <TrendingUp size={20} />
             Analyzer
           </button>
+          <button
+            className={`nav-btn ${activeTab === 'semantic' ? 'active' : ''}`}
+            onClick={() => setActiveTab('semantic')}
+          >
+            <Sparkles size={20} />
+            Semantic Search
+          </button>
         </nav>
 
         <main className="app-main">
@@ -665,6 +674,7 @@ function App() {
               {activeTab === 'dashboard' && renderDashboard()}
               {activeTab === 'reviews' && renderReviews()}
               {activeTab === 'analyzer' && renderAnalyzer()}
+              {activeTab === 'semantic' && <SemanticSearch />}
             </>
           )}
         </main>
