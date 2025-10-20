@@ -1,6 +1,6 @@
 # Airbnb Reviews Sentiment Analysis 🏠📊
 
-A full-stack web application for analyzing sentiment in Airbnb reviews using Natural Language Processing (NLP) with VADER sentiment analysis.
+A full-stack web application for analyzing sentiment in Airbnb reviews using Natural Language Processing (NLP) with VADER sentiment analysis and AI-powered semantic search.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)
@@ -30,9 +30,17 @@ Test sentiment analysis on any custom text instantly.
 - **Dashboard**: Visual overview with statistics, charts, and sentiment distribution
 - **Reviews Browser**: Browse, search, and filter reviews by sentiment
 - **Custom Analyzer**: Analyze sentiment of any custom text instantly
+- **🆕 AI-Powered Semantic Search**: Side-by-side comparison of keyword vs semantic search using OpenAI embeddings
 - **VADER Sentiment Analysis**: Advanced NLP with better negation handling and emoji support
 - **Beautiful UI**: Modern, responsive design with Airbnb coral branding
 - **Fully Deployed**: Live on Netlify (frontend) and Render (backend)
+
+## 📊 Dataset
+
+- **Production (Deployed)**: 2,996 reviews (optimized for free-tier hosting)
+- **Full Dataset Available**: 342,904+ Airbnb reviews from Kaggle
+- **Source**: [Airbnb Reviews Dataset on Kaggle](https://www.kaggle.com/datasets)
+- **Local Development**: Can load the complete dataset (342k+ reviews) when running locally
 
 ## Tech Stack
 
@@ -41,6 +49,8 @@ Test sentiment analysis on any custom text instantly.
 - **Flask**: Web framework
 - **Pandas**: Data processing
 - **VADER Sentiment**: Advanced sentiment analysis with negation handling
+- **OpenAI API**: text-embedding-3-small for semantic search
+- **scikit-learn**: Cosine similarity calculations
 - **Flask-CORS**: Cross-origin resource sharing
 - **Gunicorn**: Production WSGI server
 
